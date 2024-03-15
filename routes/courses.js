@@ -21,7 +21,7 @@ router.get("/get-all-courses", async (req, res) => {
 })
 
 router.get("/get-single-course", (req, res) => {
-    const course_ID = req.query.course_ID;
+    const course_ID = parseInt(req.query.course_ID);
     if(course_ID){
         getCourses().then(courses => {
             const course = courses.data.filter(item => item.id === course_ID);
@@ -70,7 +70,7 @@ router.post("/finishCourse", async (req, res) => {
     //const id = req.body.id;
     //const key = req.body.key;
     if(user_ID && user_course_ID){
-        finishLesson(user_course_ID, "finish").then(data => {
+        finishCourse(user_course_ID, user_ID).then(data => {
             res.status(200).send({data: data.data, status: true})
         }).catch(error => {res.status(400).send({error, status: false})})
     }else{

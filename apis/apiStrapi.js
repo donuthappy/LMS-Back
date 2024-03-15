@@ -198,7 +198,7 @@ function getQuizz (courseID) {
             }).then(async (result) => {
                 const data = await result.json();
                 const quiz = data.data.filter(item => item.attributes.course_id === courseID);
-                const newQuiz = quiz.map(item => {
+                                const newQuiz = quiz.map(item => {
                     let newItem = {
                         title: item.attributes.title,
                     }
@@ -223,6 +223,73 @@ function getQuizz (courseID) {
     )
 }
 
+function getCorrectAnswer(question_id) {
+    return (
+        new Promise( async (res, rej) => {
+            fetch(`${process.env.url}/lms-questions/${question_id}?populate=*`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${process.env.STRAPI_TOKEN}`,
+                    "Content-Type": 'application/json',
+                },
+                body: await JSON.stringify({
+                    data: {
+                        question: question, answer: answer
+                    }
+                })
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                // res(data);
+            })
+            .then(async (max) => {
+                fetch(`${process.env.url}/lms-quizzes/${course_ID}?populate`, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${process.env.STRAPI_TOKEN}`,
+                        "Content-Type": 'application/json',
+                }
+                })
+                .then(async resdata =>{
+                    const response = await resdata.json();
+                    res({data1:data,data2:response});
+                })
+            })
+            .catch(err=>{
+                rej(err)
+            })
+        })
+        )
+}
+
+function setTimeout (duration) {
+    return (
+        new Promise(async (res, rej) => {
+            fetch(`${process.env.url}/lms-courses/${course_ID}?populate=*`,
+            {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${process.env.STRAPI_TOKEN}`,
+                    "Content-Type": 'application/json',
+                },
+                body: await JSON.stringify({
+                    data: {
+                        duration: duration
+                    }
+                })
+            })
+            .then(async (preload) => {
+                const data = await preload.json();
+                console.log(data);
+                res(data)
+            }).catch(error => {
+                console.log(error);
+                rej(error)
+            })
+        })
+    )
+}
+    
 function getOneUserCourse (id) {
     return(
         new Promise( (res, rej) => {
@@ -356,7 +423,9 @@ function finishCourse(id, userID) {
                 },
                 body: await JSON.stringify({
                     data: {
-                        finish: true
+                        finish: true,
+                        courseID: id,
+                        user_ID: userID
                     }
                 })
             }).then(async (result) => {
@@ -598,8 +667,26 @@ function getModule(id){
     )
 }
 
-
-
+function getUsers(){
+    return(
+        new Promise ((res,rej) => {
+            fetch(`${process.env.url}/lms-users`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${process.env.STRAPI_TOKEN}`,
+                    "Content-Type": 'application/json',
+                }
+            }).then(async (response) => {
+                const data = await response.json();
+                console.log(data);
+                res(data)
+            }).catch(error => {
+                console.log(error);
+                rej(error)
+            })
+        })
+    )
+}
 
 module.exports = {
     createCourse,
@@ -621,7 +708,9 @@ module.exports = {
     updatePercentage,
     getLesson,
     getQuiz1,
-    getCertificate
-
+    getCertificate,
+    getUsers,
+    getCorrectAnswer,
+    setTimeout
 
 }

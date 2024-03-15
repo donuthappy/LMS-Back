@@ -2,15 +2,15 @@ const express = require('express');
 const { getCourseLessons, getCourses, vinculateLesson, vinculateModule, getModule, getLesson, getOneUserCourse, updatePercentage } = require('../apis/apiStrapi');
 const router = express.Router();
 
-/*
+
 router.get("/getCourseLessons", async (req,res) => {
     const lesson_ID = parseInt(req.query.lesson_ID);
     if(lesson_ID){
-        /*
+     
         getCourseLessons(courseID).then(async (lessons) => {
             res.status(200).send({data: lessons, status: true})
-        })*/
-        /*getCourses().then(async (data) => {
+        })
+        getCourses().then(async (data) => {
             const course = await data.data.filter(item => item.attributes.courseID === course_ID)
             //console.log(course[0])
             res.status(200).send({data: course[0].attributes.lms_lessons.data, status: true})
@@ -18,7 +18,7 @@ router.get("/getCourseLessons", async (req,res) => {
     }else{
         res.status(401).send({message: "Missing data in the body", status: false})
     }
-})*/
+})
 
 router.get("/get-module", (req, res) => {
     const module_ID = req.query.module_ID;
